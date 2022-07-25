@@ -55,10 +55,13 @@ class ABCDDataset:
         parce_list     = parce_frame[1].tolist()
         return parce_list
 
-     """
-     밑의 것들 : 아직 implement안한 것들이고 그냥 그대로 VAB github에서 복붙 한것들 
-     * cognitive score : 이거는 내가 cognitive score csv파일을 따로 만들어서 data의 method중 하나로 만들어야 할듯 
-     """
+"""
+
+밑의 것들 : 아직 implement안한 것들이고 그냥 그대로 VAB github에서 복붙 한것들 
+* cognitive score : 이거는 내가 cognitive score csv파일을 따로 만들어서 data의 method중 하나로 만들어야 할듯 
+
+"""
+        
      #def cognitive_score(self):
      #   
      #   d              = os.path.join(self.ds_external)
