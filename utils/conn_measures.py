@@ -12,7 +12,7 @@ class compute_bct_UW():
             "assortativity" : bct.assortativity_wei(self.mat,flag=0), #flag=0 because WU
             "pos_strength_sum" : bct.strengths_und_sign(self.mat)[2],
             "char_path_len" : bct.charpath(self.mat)[0], 
-            "global_efficiency" : bct.charpath(self.mat)[1], 
+            #"global_efficiency" : bct.charpath(self.mat)[1], #infinity 로 나와서 지움
             "graph_radius" : bct.charpath(self.mat)[3], 
             "graph_diameter" : bct.charpath(self.mat)[4], #float, float, vec, float, float
             "max_modularity_mertric_gam0_1" : bct.modularity_und(self.mat, 0.1)[1],
