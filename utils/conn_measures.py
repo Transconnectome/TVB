@@ -17,14 +17,21 @@ def weight_based_threshold(input_data, threshold: int):
 def density_based_threshold(input_data, threshold):
 def calcul_density(input_data):
 def calcul_n_comp(input_data):
-def calcul_connection_length_mat(input_data): => connectivity matrix of length
+
 def calcul_module_and_modularity_Louvain(input_data, n_node):
 def calcul_s_core(input_data, n_node):
 def calcul_k_core(input_data, n_node):
 def calcul_closeness_centrality(distance_mat, n_node):
-def calcul_within_module_degree_zscore(input_data, modular_structures, n_node):
-def calcul_participation_coefficient(input_data, modular_structures, n_node):
+def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
+def calcul_participation_coefficient(input_data, modular_structures, n_node): => need `modular_structure"
 def calcul_rich_club_coef(input_data, degree):
+
+=========DID========
+def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
+also did distance matrix || __init__ 했다 
+
+
+
 """
 
 class compute_bct_UW():
@@ -35,6 +42,7 @@ class compute_bct_UW():
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
         self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
+        #have to do "calcul_module_and_modularity_louvain" (modular structure is used on some other measures)
     
     def scalar_properties(self):
         data_dict = {
