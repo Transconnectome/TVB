@@ -1,9 +1,40 @@
 import bct
 import pandas as pd
 
+"""
+TODOS:
+1. using decorators => like 정우쌤 코드, subject loop돌려서 합치도록 하기! 
+2. 정우쌤 코드에서 s_score파트같이, paraemter바꾸면서 해나가는 파트 (내가 뺸 파트들) 도 넣기!
+3. 0~1 min/maxing을 할지 말지 정하기(self.mat을)
+4. 정우쌤 코드보면 thresholding을 했던데, 나도 이것을 해야할지 생각해보기!
+"""
+
+
+"""
+things to add, when compared to 정우쌤 코드들은 다음과 같다
+
+def weight_based_threshold(input_data, threshold: int):
+def density_based_threshold(input_data, threshold):
+def calcul_density(input_data):
+def calcul_n_comp(input_data):
+def calcul_connection_length_mat(input_data): => connectivity matrix of length
+def calcul_module_and_modularity_Louvain(input_data, n_node):
+def calcul_s_core(input_data, n_node):
+def calcul_k_core(input_data, n_node):
+def calcul_closeness_centrality(distance_mat, n_node):
+def calcul_within_module_degree_zscore(input_data, modular_structures, n_node):
+def calcul_participation_coefficient(input_data, modular_structures, n_node):
+def calcul_rich_club_coef(input_data, degree):
+"""
+
 class compute_bct_UW():
     def __init__(self, mat): #mat : matrix (SC or FC)
-        self.mat = mat
+        #self.mat = mat
+        self.mat = mat/mat.max() #0~1로 min/maxing
+        
+        """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
+        self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
+        self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
     
     def scalar_properties(self):
         data_dict = {
@@ -12,7 +43,7 @@ class compute_bct_UW():
             "assortativity" : bct.assortativity_wei(self.mat,flag=0), #flag=0 because WU
             "pos_strength_sum" : bct.strengths_und_sign(self.mat)[2],
             "char_path_len" : bct.charpath(self.mat)[0], 
-            #"global_efficiency" : bct.charpath(self.mat)[1], #infinity 로 나와서 지움
+            "global_efficiency" : bct.charpath(self.mat)[1], #infinity 로 나와서 지워야 하나 일단은 두자
             "graph_radius" : bct.charpath(self.mat)[3], 
             "graph_diameter" : bct.charpath(self.mat)[4], #float, float, vec, float, float
             "max_modularity_mertric_gam0_1" : bct.modularity_und(self.mat, 0.1)[1],
