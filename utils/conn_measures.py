@@ -30,14 +30,13 @@ def calcul_rich_club_coef(input_data, degree):
 def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
 also did distance matrix || __init__ 했다 
 
-
-
 """
 
 class compute_bct_UW():
     def __init__(self, mat): #mat : matrix (SC or FC)
         #self.mat = mat
         self.mat = mat/mat.max() #0~1로 min/maxing
+        self.n_node = (self.mat).shape[0] #used later
         
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
