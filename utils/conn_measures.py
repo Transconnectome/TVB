@@ -33,9 +33,11 @@ also did distance matrix || __init__ 했다
 """
 
 class compute_bct_UW():
-    def __init__(self, mat): #mat : matrix (SC or FC)
+    def __init__(self, mat, threshold): #mat : matrix (SC or FC)
         #self.mat = mat
         self.mat = mat/mat.max() #0~1로 min/maxing
+        self.mat = bct.threshold_proportional(self.mat, threshold) #thresholded matrix를 쓴다        
+        
         self.n_node = (self.mat).shape[0] #used later
         
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
