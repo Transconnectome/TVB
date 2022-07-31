@@ -1,20 +1,70 @@
 import bct
 import pandas as pd
 
+"""
+TODOS:
+1. using decorators => like 정우쌤 코드, subject loop돌려서 합치도록 하기! 
+2. 정우쌤 코드에서 s_score파트같이, paraemter바꾸면서 해나가는 파트 (내가 뺸 파트들) 도 넣기!
+"""
+
+
+"""
+things to add, when compared to 정우쌤 코드들은 다음과 같다
+
+def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
+def density_based_threshold(input_data, threshold):       => implemented
+def calcul_density(input_data):
+def calcul_n_comp(input_data):
+
+def calcul_module_and_modularity_Louvain(input_data, n_node):
+def calcul_s_core(input_data, n_node):
+def calcul_k_core(input_data, n_node):
+def calcul_closeness_centrality(distance_mat, n_node):
+def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
+def calcul_participation_coefficient(input_data, modular_structures, n_node): => need `modular_structure"
+def calcul_rich_club_coef(input_data, degree):
+
+=========DID========
+def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
+also did distance matrix || __init__ 했다 => 이것이 쓰이는 모든 것들 (charpath를 고치는 것 끝냈다)
+
+proportional thresholding implemented
+
+0~1 min/max normalization was done (see if this is the correct normalization scheme to use
+"""
+
 class compute_bct_UW():
-    def __init__(self, mat): #mat : matrix (SC or FC)
-        self.mat = mat
+    def __init__(self, mat, threshold): #mat : matrix (SC or FC)
+        #self.mat = mat
+        self.mat = mat/mat.max() #0~1로 min/maxing
+        self.mat = bct.threshold_proportional(self.mat, threshold) #thresholded matrix를 쓴다        
+        
+        self.n_node = (self.mat).shape[0] #used later
+        
+        """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
+        self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
+        self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
+        #have to do "calcul_module_and_modularity_louvain" (modular structure is used on some other measures)
     
+    
+    """
+    #changed : charpath input으로 dist_mat이 들어갔다 (not mat itself) => 이런 애러들 더 있는지 확인해봐야 할듯
+    #dist_mat를 쓰는 모든 것들은 다 바꾸었다 (charpath only)
+    #NOE_in_SP는 일단 해야할지 말아야 할지 모르겠다 (정우쌤 코드자체에서는 쓰이거나 그런게 없음)(일단은 skip)
+    
+    what to do next : 
+    * global하게 쓰이는, 다른 것들 (for ex, the distance_wei that I used)까지 보고 implement하기
+    """
     def scalar_properties(self):
         data_dict = {
             "transivity" : bct.transitivity_wu(self.mat), #transitivity
             "local_efficiency" : bct.efficiency_wei(self.mat), #local efficiency
             "assortativity" : bct.assortativity_wei(self.mat,flag=0), #flag=0 because WU
             "pos_strength_sum" : bct.strengths_und_sign(self.mat)[2],
-            "char_path_len" : bct.charpath(self.mat)[0], 
-            #"global_efficiency" : bct.charpath(self.mat)[1], #infinity 로 나와서 지움
-            "graph_radius" : bct.charpath(self.mat)[3], 
-            "graph_diameter" : bct.charpath(self.mat)[4], #float, float, vec, float, float
+            "char_path_len" : bct.charpath(self.dist_mat)[0], 
+            "global_efficiency" : bct.charpath(self.dist_mat)[1], #infinity 로 나와서 지워야 하나 일단은 두자
+            "graph_radius" : bct.charpath(self.dist_mat)[3], 
+            "graph_diameter" : bct.charpath(self.dist_mat)[4], #float, float, vec, float, float
             "max_modularity_mertric_gam0_1" : bct.modularity_und(self.mat, 0.1)[1],
             "max_modularity_mertric_gam1" : bct.modularity_und(self.mat, 1)[1],
             "max_modularity_mertric_gam10" : bct.modularity_und(self.mat, 10)[1],
@@ -29,7 +79,7 @@ class compute_bct_UW():
             "betweenness_centrality" : bct.betweenness_wei(self.mat), 
             "eigenvector_centrality" : bct.eigenvector_centrality_und(self.mat),
             "pos_strength" : bct.strengths_und_sign(self.mat)[0],
-            "vertex_eccentricity": bct.charpath(self.mat)[2],
+            "vertex_eccentricity": bct.charpath(self.dist_mat)[2],
             "nodal_btw_vec" : bct.edge_betweenness_wei(self.mat)[1],
             "opt_community_struct_gam0_1" : bct.modularity_und(self.mat, 0.1)[0],
             "opt_community_struct_gam1" : bct.modularity_und(self.mat, 1)[0],

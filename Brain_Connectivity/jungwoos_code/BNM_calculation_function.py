@@ -47,6 +47,8 @@ def from_mat_form_to_vec_form(input_data):
 def weight_based_threshold(input_data, threshold: int):
     # remove connection when streamline count below the threshold
     # math :: if streamline count <= threshold : streamline counts = 0
+    
+    #threshold_absolute를 써야한다! (정우쌤코드보다는 absolute threshold를 쓰면 된다
 
     init = time.time()
 
