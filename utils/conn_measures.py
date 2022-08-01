@@ -121,6 +121,9 @@ class compute_bct_UW():
             "nodal_btw_vec" : bct.edge_betweenness_wei(self.mat)[1],
             "s_core_index" : s_core_index,
             "s_core_size" : s_core_size,
+            "within_module_deg_z_score" : bct.module_degree_zscore(self.mat, self.modular_structures),
+            "participation_coef" : bct.participation_coef(self.mat, self.modular_structures),
+            "rich_club_coef" : bct.rich_club_wu(self.mat), #klevel은 default로 되도록 함(maximujm degree로 자동 setting)
             "opt_community_struct_gam0_1" : bct.modularity_und(self.mat, 0.1)[0],
             "opt_community_struct_gam1" : bct.modularity_und(self.mat, 1)[0],
             "opt_community_struct_gam10" : bct.modularity_und(self.mat, 10)[0],
@@ -214,9 +217,9 @@ class compute_bct_UW():
 
 
 ################the things below need ci(community affiliation vector) as input###################
-#bct.module_degree_zscore(sample_sc) 
-#bct.participation_coef(sample_sc)
-#bct.participation_coef_sign(sample_sc)
+#bct.module_degree_zscore(sample_sc)         => implemented
+#bct.participation_coef(sample_sc)        => implemented
+#bct.participation_coef_sign(sample_sc)        => implemented
 #bct.gateway_coef_sign(sample_sc)
 #bct.diversity_coef_sign(sample_sc)                     
 ######################################################################
@@ -227,7 +230,7 @@ class compute_bct_UW():
 ## 일단은 오래 걸려서 commented out
 
 ##vector but varying length (depending on the SC property)
-#bct.rich_club_wu(sample_sc).shape
+#bct.rich_club_wu(sample_sc).shape  => implemented (따로 klevel input을 안줘서, 자동으로 maximum degrees를 쓰도록 
 #help(bct.rich_club_wu)
 
 

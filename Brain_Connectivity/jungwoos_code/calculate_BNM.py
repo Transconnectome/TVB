@@ -166,7 +166,7 @@ s_core_index_pd = pd.DataFrame(s_core_index, index=subjectkeys, columns=score_na
 s_core_size_pd = pd.DataFrame(s_core_size, index=subjectkeys,
                               columns=[f'score_size_s={round(i, 2)}' for i in np.arange(0, 1, 0.01)])
 """
-#=====FROM BELOW======== (k-score은 이상해서 아직은 안함...)(see the github issue I posted on bctpy
+NOT IMPLEMENTED (k-score은 이상해서 아직은 안함...)(see the github issue I posted on bctpy
 """
 # measure of core structure, core-centrality
 # k-coreness (k-core-index, k-core size)
@@ -174,27 +174,44 @@ kcore_index = calcul_k_core(count_mat_data, n_node)
 kcore_index_name_list = make_nodal_column_list(region_list, 'kcore_index_of')
 kcore_index_pd = pd.DataFrame(kcore_index, columns=kcore_index_name_list, index=subjectkeys)
 
+
+
+"""
+NOT IMPLEMENTED => 이거는 정우쌤이 직접 code로 implement한 것 같아서, 나도 그런식으로 해야할듯 
+"""
 # closeness centrality : Cc = nodal efficiency
 # (Ref. Rubinov & Sporns 2010, Complex network measures of brain connectivity:Uses and interpretations)
 closeness_centrality = calcul_closeness_centrality(distance_mat, n_node)
 closeness_centrality_list = make_nodal_column_list(region_list, 'Cc')
 closeness_centrality_pd = pd.DataFrame(closeness_centrality, columns=closeness_centrality_list, index=subjectkeys)
-
+"""
+IMPLEMENTED
+"""
 # betweenness centrality : BC
 betweenness_centrality = calcul_betweenness_centrality(connection_length_mat, n_node)
 betweenness_centrality_list = make_nodal_column_list(region_list, 'BC')
 betweenness_centrality_pd = pd.DataFrame(betweenness_centrality, columns=betweenness_centrality_list, index=subjectkeys)
 
+"""
+IMPLEMENTED
+"""
 # within module degree z-score
 within_module_degree_zscore = calcul_within_module_degree_zscore(count_mat_data, modular_structures, n_node)
 within_module_degree_list = make_nodal_column_list(region_list, 'within_module_deg')
 within_module_degree_pd = pd.DataFrame(within_module_degree_zscore, columns=within_module_degree_list, index=subjectkeys)
 
+"""
+IMPLEMENTED
+"""
 # participation coeffcient
 participation_coefficient = calcul_participation_coefficient(count_mat_data, modular_structures, n_node)
 participation_coef_list = make_nodal_column_list(region_list, 'participation_coef')
 participation_coefficient_pd = pd.DataFrame(participation_coefficient, columns=participation_coef_list, index=subjectkeys)
 
+
+"""
+IMPLEMENTED (근데 NAN 이런게 나옴)
+"""
 # rich club coefficient
 rich_club_coef, rich_club_coef_name_list = calcul_rich_club_coef(count_mat_data, degree)
 rich_club_coef_pd = pd.DataFrame(rich_club_coef, columns=rich_club_coef_name_list, index=subjectkeys).fillna(0)

@@ -274,7 +274,7 @@ def calcul_rich_club_coef(input_data, degree):
     init = time.time()
     rich_club_coef = np.zeros((len(input_data), int(np.max(degree))))
     for i in range(len(input_data)):
-        rich_club_coef[i] = bct.rich_club_wu(input_data[i], int(np.max(degree)))
+        rich_club_coef[i] = bct.rich_club_wu(input_data[i], int(np.max(degree))) #이거는 이미 되어있다
     rich_club_coef_name_list = []
     for i in range(int(np.max(degree))):
         rich_club_coef_name_list.append('rich_club_coef_k=%d'%(i+1))
