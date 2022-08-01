@@ -53,6 +53,12 @@ class compute_bct_UW():
             
         self.n_node = (self.mat).shape[0] #used later
         
+        """
+        다 implement한후에, "여러 output형태 가진 것들은 따로 def로 묶은 후, 써주기)
+        
+        """
+        
+        
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
         self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
@@ -70,6 +76,10 @@ class compute_bct_UW():
                     
         self.modular_structures = modular_structures
         self.modularities = modularities
+        
+        ####score
+        
+        ####kscore
         
     """
     #changed : charpath input으로 dist_mat이 들어갔다 (not mat itself) => 이런 애러들 더 있는지 확인해봐야 할듯
