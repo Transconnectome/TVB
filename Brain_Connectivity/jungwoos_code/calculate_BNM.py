@@ -153,9 +153,7 @@ modular_structure_pd = pd.DataFrame(modular_structures, columns=module_name_list
 module_num_pd = pd.DataFrame(modular_structure_pd.max(axis=1), columns=['module_num'], index=subjectkeys)
 modularity_pd = pd.DataFrame(modularities, columns=['optimal modularity'], index=subjectkeys)
 
-"""
-#=====FROM BELOW========
-"""
+
 
 ####### Measures of Centrality #################
 # : s-core index, k-core index, Closeness Centrality(Cc)=nodal efficiency, Betweenness Centrality(BC),
@@ -167,7 +165,9 @@ score_name_list = make_nodal_column_list(region_list, 'score')
 s_core_index_pd = pd.DataFrame(s_core_index, index=subjectkeys, columns=score_name_list)
 s_core_size_pd = pd.DataFrame(s_core_size, index=subjectkeys,
                               columns=[f'score_size_s={round(i, 2)}' for i in np.arange(0, 1, 0.01)])
-
+"""
+#=====FROM BELOW======== (k-score은 이상해서 아직은 안함...)(see the github issue I posted on bctpy
+"""
 # measure of core structure, core-centrality
 # k-coreness (k-core-index, k-core size)
 kcore_index = calcul_k_core(count_mat_data, n_node)

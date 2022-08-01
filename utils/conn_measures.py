@@ -15,7 +15,7 @@ things to add, when compared to 정우쌤 코드들은 다음과 같다
 def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
 def density_based_threshold(input_data, threshold):       => implemented
 
-def calcul_s_core(input_data, n_node):
+
 def calcul_k_core(input_data, n_node):
 def calcul_closeness_centrality(distance_mat, n_node):
 def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
@@ -35,6 +35,8 @@ def calcul_density(input_data):
 def calcul_n_comp(input_data):
 
 def calcul_module_and_modularity_Louvain(input_data, n_node):
+
+def calcul_s_core(input_data, n_node):
 """
 
 class compute_bct_UW():
@@ -205,9 +207,6 @@ class compute_bct_UW():
 
 #bct.retrieve_shortest_pathr(sample_sc)  #have to put in certain parameters (source node, output node and so on), and output is not some thing
 #help(bct.retrieve_shortest_path)
-
-#bct.score_wu(sample_sc) #s value needed
-#help(bct.score_wu)
 
 #bct.pagerank_centrality(sample_sc) #need dampning factor, d as input
 #help(bct.pagerank_centrality)
