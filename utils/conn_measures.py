@@ -14,10 +14,7 @@ things to add, when compared to 정우쌤 코드들은 다음과 같다
 
 def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
 def density_based_threshold(input_data, threshold):       => implemented
-def calcul_density(input_data):
-def calcul_n_comp(input_data):
 
-def calcul_module_and_modularity_Louvain(input_data, n_node):
 def calcul_s_core(input_data, n_node):
 def calcul_k_core(input_data, n_node):
 def calcul_closeness_centrality(distance_mat, n_node):
@@ -32,6 +29,12 @@ also did distance matrix || __init__ 했다 => 이것이 쓰이는 모든 것들
 proportional thresholding 
 
 0~1 min/max normalization was done (see if this is the correct normalization scheme to use
+
+def calcul_density(input_data):
+
+def calcul_n_comp(input_data):
+
+def calcul_module_and_modularity_Louvain(input_data, n_node):
 """
 
 class compute_bct_UW():
@@ -70,12 +73,6 @@ class compute_bct_UW():
         
     """
     #changed : charpath input으로 dist_mat이 들어갔다 (not mat itself) => 이런 애러들 더 있는지 확인해봐야 할듯
-    #dist_mat를 쓰는 모든 것들은 다 바꾸었다 (charpath only)
-    #NOE_in_SP는 일단 해야할지 말아야 할지 모르겠다 (정우쌤 코드자체에서는 쓰이거나 그런게 없음)(일단은 skip)
-    
-    what to do next : 
-    * global하게 쓰이는, 다른 것들 (for ex, the distance_wei that I used)까지 보고 implement하기
-    * stackoverflow에서처럼, zip을 써서 받도록 하기(also, take as answer the person's response)
     """
     
     """
@@ -128,9 +125,12 @@ class compute_bct_UW():
         }
         return data_dict, data_dict.keys()
     
-    def outlier_check_density_based(self):
+    def usability_check_density_based(self):
+        """
+        returns True : CAN be used (opposite of its name haha)(rename?)
+        returns None : CANNOT be used (does not pass the usability test)
+        """
         density = bct.density_und(self.mat_original)[0]
-        
         #density-based outlier removal was successful
         if self.threshold == None:
             warnings.warn( "threshold was not provided, will exit with None")
@@ -148,27 +148,8 @@ class compute_bct_UW():
             else :
                 print("subject passed the test!")
                 return True 
-        return None
     
-    """    
-    #density-based outlier removal
-    density = calcul_density(count_mat_data)
-    inclusion_criteria = (density >= threshold)
-    print(f'the number of excluded subjects is {len(count_data) - sum(inclusion_criteria)}')
-    print(f'remaining subjects is {sum(inclusion_criteria)}')
-    count_mat_data = count_mat_data[inclusion_criteria]
-    subjectkeys = count_data.index[inclusion_criteria]
 
-    thresholded_count_mat_data = density_based_threshold(count_mat_data, threshold)
-    
-    #fragmentaitno (all connected?)여부로 outlier removal
-    # check n_components & select not fragmented subjects
-    n_comp = calcul_n_comp(thresholded_count_mat_data) #81 in our case
-    not_fragmented_condition = (n_comp == 1)
-    subjectkeys = subjectkeys[not_fragmented_condition]
-    count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
-    """
-    
     
     
     
