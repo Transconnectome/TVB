@@ -106,6 +106,8 @@ class compute_bct_UW():
         return data_dict, data_dict.keys()
 
     def vector_properties(self):
+        s_core_index, s_core_size = self.s_core_computation()
+        
         data_dict = {
             "degrees" : bct.degrees_und(self.mat),
             "clustering_coef" : bct.clustering_coef_wu(self.mat), ##better help documentation on the sign version
@@ -115,6 +117,8 @@ class compute_bct_UW():
             "pos_strength" : bct.strengths_und_sign(self.mat)[0],
             "vertex_eccentricity": bct.charpath(self.dist_mat)[2],
             "nodal_btw_vec" : bct.edge_betweenness_wei(self.mat)[1],
+            "s_core_index" : s_core_index,
+            "s_core_size" : s_core_size,
             "opt_community_struct_gam0_1" : bct.modularity_und(self.mat, 0.1)[0],
             "opt_community_struct_gam1" : bct.modularity_und(self.mat, 1)[0],
             "opt_community_struct_gam10" : bct.modularity_und(self.mat, 10)[0],
@@ -159,9 +163,18 @@ class compute_bct_UW():
                 print("subject passed the test!")
                 return True 
     
-
-    
-    
+    def s_core_computation(self):
+        """
+        do things only for s-core hting
+        """
+        s_core_index = np.zeros(self.n_node)
+        s_core_size = np.zeros(100)
+        for i,s_core in enumerate(np.linspace(0,1,100)):
+            ss, s_core_size[i] = bct.score_wu(self.mat, s_core)
+            cond = ss.sum(axis=1) != 0 #i.e. True if not zero (meaningful), (i.e. the thing is not zero things)
+            s_core_index[cond] = s_core #어떤 score이었을때 되었는지를 keep track
+            
+        return s_core_index, s_core_size
     
 """
 * 밑의 것들은  모두 additional paraemters를 정해줘야해서 하지 않았다 
