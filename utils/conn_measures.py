@@ -37,6 +37,8 @@ proportional thresholding
 class compute_bct_UW():
     def __init__(self, mat, threshold = None): #mat : matrix (SC or FC)
         #self.mat = mat
+        self.threshold = threshold
+        self.mat_original = mat
         self.mat = mat/mat.max() #0~1로 min/maxing
         
         #thresholding여부를 threshold값이 주어진 여부로 결정
@@ -59,8 +61,8 @@ class compute_bct_UW():
         while modular_structures.max() != 5:
             modular_structures, modularities = bct.community_louvain(self.mat)
             count+=1
-            if count > 10000:
-                if (np.max(modular_structures) == 6) or (np.max(modular_structures[i])==4):
+            if count > 10000: #MUST BE CHANGED
+                if (np.max(modular_structures) == 6) or (np.max(modular_structures)==4):
                     break
                     
         self.modular_structures = modular_structures
@@ -77,7 +79,7 @@ class compute_bct_UW():
     """
     
     """
-    Modular slowing of resting-state dynamic functional connectivity as a marker of cognitive dysfunction induced by sleep deprivation => 이 논문에서, bct.community_louvain쓸때 어떤 것을 써야하는지 나오게 함 (stochastic한 algorithm이니, 2000번 돌려서 community 갯수가 5개가 되게 되는 robust한 gamma값을 써야한다고 논문에서 나옴.. 일단은 그냥 1로 쓰되, fitting을 해야할 수도 있을듯) 
+    __init__에서 modular에서 5로 한 이유와, 조금더 correct한 approach가 뭔지 : Modular slowing of resting-state dynamic functional connectivity as a marker of cognitive dysfunction induced by sleep deprivation => 이 논문에서, bct.community_louvain쓸때 어떤 것을 써야하는지 나오게 함 (stochastic한 algorithm이니, 2000번 돌려서 community 갯수가 5개가 되게 되는 robust한 gamma값을 써야한다고 논문에서 나옴.. 일단은 그냥 1로 쓰되, fitting을 해야할 수도 있을듯) 
     """
     def scalar_properties(self):
         bcp = bct.charpath(self.dist_mat)
@@ -125,7 +127,49 @@ class compute_bct_UW():
             "edge_btw_mat" : bct.edge_betweenness_wei(self.mat)[0],
         }
         return data_dict, data_dict.keys()
+    
+    def outlier_check_density_based(self):
+        density = bct.density_und(self.mat_original)[0]
+        
+        #density-based outlier removal was successful
+        if self.threshold == None:
+            warnings.warn( "threshold was not provided, will exit with None")
+            return None
+        elif density < self.threshold :
+            warnings.warn ("density based outlier detected, will exit with None")
+            return None
+        else:
+            #fragmentation outlier removal (since we're sure fragmentation didn't occur
+            n_comp = len(bct.get_components(self.mat)[1]) #n_comp : component의 갯수
+            if n_comp != 1:
+                warnings.warn("n_comp > 1, will exit with None")
+                return None
+                #raise error 하지 않은 이유 : 여러번 돌릴 꺼라서 error뜨면 안됨 
+            else :
+                print("subject passed the test!")
+                return True 
+        return None
+    
+    """    
+    #density-based outlier removal
+    density = calcul_density(count_mat_data)
+    inclusion_criteria = (density >= threshold)
+    print(f'the number of excluded subjects is {len(count_data) - sum(inclusion_criteria)}')
+    print(f'remaining subjects is {sum(inclusion_criteria)}')
+    count_mat_data = count_mat_data[inclusion_criteria]
+    subjectkeys = count_data.index[inclusion_criteria]
 
+    thresholded_count_mat_data = density_based_threshold(count_mat_data, threshold)
+    
+    #fragmentaitno (all connected?)여부로 outlier removal
+    # check n_components & select not fragmented subjects
+    n_comp = calcul_n_comp(thresholded_count_mat_data) #81 in our case
+    not_fragmented_condition = (n_comp == 1)
+    subjectkeys = subjectkeys[not_fragmented_condition]
+    count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
+    """
+    
+    
     
     
 """

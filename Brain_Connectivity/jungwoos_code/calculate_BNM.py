@@ -77,10 +77,12 @@ if threshold_scheme == 'weight':
 ```
 밑의 것 `thresholdscheme == density`는 할필요 없다!~! 한방으로 끝냈다 왜 이렇게 하는지 잘 이해가 안됨(여쭤보기?)
 ```
-elif threshold_scheme == 'density': 
+elif threshold_scheme == 'density':  #outlier 제거하는 과정(?)
 
     # exclude the subjects having density less than threshold before analysis
     # to make all analyized subjects  have the same density.
+    
+    #density-based outlier removal
     density = calcul_density(count_mat_data)
     inclusion_criteria = (density >= threshold)
     print(f'the number of excluded subjects is {len(count_data) - sum(inclusion_criteria)}')
@@ -89,7 +91,8 @@ elif threshold_scheme == 'density':
     subjectkeys = count_data.index[inclusion_criteria]
 
     thresholded_count_mat_data = density_based_threshold(count_mat_data, threshold)
-
+    
+    #fragmentaitno (all connected?)여부로 outlier removal
     # check n_components & select not fragmented subjects
     n_comp = calcul_n_comp(thresholded_count_mat_data) #81 in our case
     not_fragmented_condition = (n_comp == 1)
@@ -142,7 +145,7 @@ clustering_coef_pd = pd.DataFrame(clustering_coefs, columns=clustering_coef_list
 clustering_coef_pd['avg_clustering_coef'] = clustering_coef_pd.mean(axis=1)
 
 
-#=====FROM BELOW========
+
 # modular structure & modularity
 modular_structures, modularities = calcul_module_and_modularity_Louvain(count_mat_data, n_node)
 module_name_list = make_nodal_column_list(region_list, 'module_index_of')
@@ -150,6 +153,9 @@ modular_structure_pd = pd.DataFrame(modular_structures, columns=module_name_list
 module_num_pd = pd.DataFrame(modular_structure_pd.max(axis=1), columns=['module_num'], index=subjectkeys)
 modularity_pd = pd.DataFrame(modularities, columns=['optimal modularity'], index=subjectkeys)
 
+"""
+#=====FROM BELOW========
+"""
 
 ####### Measures of Centrality #################
 # : s-core index, k-core index, Closeness Centrality(Cc)=nodal efficiency, Betweenness Centrality(BC),
