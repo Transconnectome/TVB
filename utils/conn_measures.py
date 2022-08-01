@@ -1,6 +1,7 @@
 import bct
 import pandas as pd
-
+import warnings
+import numpy as np
 """
 TODOS:
 1. using decorators => like 정우쌤 코드, subject loop돌려서 합치도록 하기! 
@@ -28,25 +29,43 @@ def calcul_rich_club_coef(input_data, degree):
 def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
 also did distance matrix || __init__ 했다 => 이것이 쓰이는 모든 것들 (charpath를 고치는 것 끝냈다)
 
-proportional thresholding implemented
+proportional thresholding 
 
 0~1 min/max normalization was done (see if this is the correct normalization scheme to use
 """
 
 class compute_bct_UW():
-    def __init__(self, mat, threshold): #mat : matrix (SC or FC)
+    def __init__(self, mat, threshold = None): #mat : matrix (SC or FC)
         #self.mat = mat
         self.mat = mat/mat.max() #0~1로 min/maxing
-        self.mat = bct.threshold_proportional(self.mat, threshold) #thresholded matrix를 쓴다        
         
+        #thresholding여부를 threshold값이 주어진 여부로 결정
+        if threshold == None:
+            warnings.warn("no thresholding will be used please check if this is what you want :)!")
+            print("no thresholding will be used please check if this is what you want :)!")
+        else :
+            self.mat = bct.threshold_proportional(self.mat, threshold) #thresholded matrix를 쓴다       
+            
         self.n_node = (self.mat).shape[0] #used later
         
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
         self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
         #have to do "calcul_module_and_modularity_louvain" (modular structure is used on some other measures)
-    
-    
+        
+        ####bct inputs, modular structure and modulariteies
+        count = 1
+        modular_structures = np.zeros(5)
+        while modular_structures.max() != 5:
+            modular_structures, modularities = bct.community_louvain(self.mat)
+            count+=1
+            if count > 10000:
+                if (np.max(modular_structures) == 6) or (np.max(modular_structures[i])==4):
+                    break
+                    
+        self.modular_structures = modular_structures
+        self.modularities = modularities
+        
     """
     #changed : charpath input으로 dist_mat이 들어갔다 (not mat itself) => 이런 애러들 더 있는지 확인해봐야 할듯
     #dist_mat를 쓰는 모든 것들은 다 바꾸었다 (charpath only)
@@ -54,19 +73,23 @@ class compute_bct_UW():
     
     what to do next : 
     * global하게 쓰이는, 다른 것들 (for ex, the distance_wei that I used)까지 보고 implement하기
-    * therhold를 kwargs로 받도록 하기 (항상 필요한 것은 아니니) (단, kwargs안받으면 "warning : no threshold"라고 띄우개는 하기
     * stackoverflow에서처럼, zip을 써서 받도록 하기(also, take as answer the person's response)
     """
+    
+    """
+    Modular slowing of resting-state dynamic functional connectivity as a marker of cognitive dysfunction induced by sleep deprivation => 이 논문에서, bct.community_louvain쓸때 어떤 것을 써야하는지 나오게 함 (stochastic한 algorithm이니, 2000번 돌려서 community 갯수가 5개가 되게 되는 robust한 gamma값을 써야한다고 논문에서 나옴.. 일단은 그냥 1로 쓰되, fitting을 해야할 수도 있을듯) 
+    """
     def scalar_properties(self):
+        bcp = bct.charpath(self.dist_mat)
         data_dict = {
             "transivity" : bct.transitivity_wu(self.mat), #transitivity
             "local_efficiency" : bct.efficiency_wei(self.mat), #local efficiency
             "assortativity" : bct.assortativity_wei(self.mat,flag=0), #flag=0 because WU
             "pos_strength_sum" : bct.strengths_und_sign(self.mat)[2],
-            "char_path_len" : bct.charpath(self.dist_mat)[0], 
-            "global_efficiency" : bct.charpath(self.dist_mat)[1], #infinity 로 나와서 지워야 하나 일단은 두자
-            "graph_radius" : bct.charpath(self.dist_mat)[3], 
-            "graph_diameter" : bct.charpath(self.dist_mat)[4], #float, float, vec, float, float
+            "char_path_len" : bcp[0], 
+            "global_efficiency" : bcp[1], 
+            "graph_radius" : bcp[3], 
+            "graph_diameter" : bcp[4], #float, float, vec, float, float
             "max_modularity_mertric_gam0_1" : bct.modularity_und(self.mat, 0.1)[1],
             "max_modularity_mertric_gam1" : bct.modularity_und(self.mat, 1)[1],
             "max_modularity_mertric_gam10" : bct.modularity_und(self.mat, 10)[1],

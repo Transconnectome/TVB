@@ -73,7 +73,11 @@ if threshold_scheme == 'weight':
     subjectkeys = count_data.index[not_fragmented_condition]
     count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
 
-elif threshold_scheme == 'density':
+    
+```
+밑의 것 `thresholdscheme == density`는 할필요 없다!~! 한방으로 끝냈다 왜 이렇게 하는지 잘 이해가 안됨(여쭤보기?)
+```
+elif threshold_scheme == 'density': 
 
     # exclude the subjects having density less than threshold before analysis
     # to make all analyized subjects  have the same density.
@@ -87,7 +91,7 @@ elif threshold_scheme == 'density':
     thresholded_count_mat_data = density_based_threshold(count_mat_data, threshold)
 
     # check n_components & select not fragmented subjects
-    n_comp = calcul_n_comp(thresholded_count_mat_data)
+    n_comp = calcul_n_comp(thresholded_count_mat_data) #81 in our case
     not_fragmented_condition = (n_comp == 1)
     subjectkeys = subjectkeys[not_fragmented_condition]
     count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
@@ -114,7 +118,9 @@ NOE_in_SP_pd = pd.DataFrame(NOE_in_SP_line_form, columns=NOE_in_SP_name_list, in
 ###################################
 ###### Brain Network Measures #####
 ###################################
-
+"""
+count_mat_data는 그냥 self.mat 이다
+"""
 # degree
 degree = calcul_degree(count_mat_data, n_node)
 degree_name_list = make_nodal_column_list(region_list, 'deg')
@@ -135,6 +141,8 @@ clustering_coef_list = make_nodal_column_list(region_list, 'clust_coef')
 clustering_coef_pd = pd.DataFrame(clustering_coefs, columns=clustering_coef_list, index=subjectkeys)
 clustering_coef_pd['avg_clustering_coef'] = clustering_coef_pd.mean(axis=1)
 
+
+#=====FROM BELOW========
 # modular structure & modularity
 modular_structures, modularities = calcul_module_and_modularity_Louvain(count_mat_data, n_node)
 module_name_list = make_nodal_column_list(region_list, 'module_index_of')
