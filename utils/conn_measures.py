@@ -54,6 +54,8 @@ class compute_bct_UW():
     
     what to do next : 
     * global하게 쓰이는, 다른 것들 (for ex, the distance_wei that I used)까지 보고 implement하기
+    * therhold를 kwargs로 받도록 하기 (항상 필요한 것은 아니니) (단, kwargs안받으면 "warning : no threshold"라고 띄우개는 하기
+    * stackoverflow에서처럼, zip을 써서 받도록 하기(also, take as answer the person's response)
     """
     def scalar_properties(self):
         data_dict = {
@@ -89,10 +91,11 @@ class compute_bct_UW():
     
     def matrix_properties(self):
         data_dict = {
+            "matrix_itself_norm_thresh" : self.mat,
             "agreement" : bct.agreement(self.mat), #근데 이거 SC를 input으로 넣는게 맞느지 모르겠따... (일단은 돌려봄)
             "mean_first_passage_time" : bct.mean_first_passage_time(self.mat),
-            "dist_mat" : bct.distance_wei(self.mat)[0],
-            "num_edge_shortest_path" : bct.distance_wei(self.mat)[1],
+            "dist_mat" : self.dist_mat,
+            "num_edge_shortest_path" : self.NOE_in_SP,
             "shortest_path_len" : bct.distance_wei_floyd(self.mat)[0],
             "num_edges_shortest_path":  bct.distance_wei_floyd(self.mat)[1],
             "Pmat":  bct.distance_wei_floyd(self.mat)[2],
