@@ -2,47 +2,14 @@ import bct
 import pandas as pd
 import warnings
 import numpy as np
-"""
-TODOS:
-1. using decorators => like 정우쌤 코드, subject loop돌려서 합치도록 하기! 
-2. 정우쌤 코드에서 s_score파트같이, paraemter바꾸면서 해나가는 파트 (내가 뺸 파트들) 도 넣기!
-"""
-
 
 """
 things to add, when compared to 정우쌤 코드들은 다음과 같다
+* strength based / absolute streamline count based thresholding => 일단은 density based로만 thresholding하기로 함
+* use decorators???
 
-def density_based_threshold(input_data, threshold):       => implemented
+def calcul_closeness_centrality(distance_mat, n_node): => 이거는 정우쌤이 직접 code로 구현하기는 했음. 일단은 무시
 
-
-def calcul_k_core(input_data, n_node):
-def calcul_closeness_centrality(distance_mat, n_node):
-
-
-=========DID========
-
-def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
-
-def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
-also did distance matrix || __init__ 했다 => 이것이 쓰이는 모든 것들 (charpath를 고치는 것 끝냈다)
-
-proportional thresholding 
-
-0~1 min/max normalization was done (see if this is the correct normalization scheme to use
-
-def calcul_density(input_data):
-
-def calcul_n_comp(input_data):
-
-def calcul_module_and_modularity_Louvain(input_data, n_node):
-
-def calcul_s_core(input_data, n_node):
-
-def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
-
-
-def calcul_participation_coefficient(input_data, modular_structures, n_node): => need `modular_structure"
-def calcul_rich_club_coef(input_data, degree):
 """
 
 class compute_bct_UW():
