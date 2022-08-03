@@ -12,17 +12,17 @@ TODOS:
 """
 things to add, when compared to 정우쌤 코드들은 다음과 같다
 
-def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
 def density_based_threshold(input_data, threshold):       => implemented
 
 
 def calcul_k_core(input_data, n_node):
 def calcul_closeness_centrality(distance_mat, n_node):
-def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
-def calcul_participation_coefficient(input_data, modular_structures, n_node): => need `modular_structure"
-def calcul_rich_club_coef(input_data, degree):
+
 
 =========DID========
+
+def weight_based_threshold(input_data, threshold: int):   => default behavior을 proportional thresholding으로 잡기는 함... 필요하면 넣기
+
 def calcul_connection_length_mat(input_data): => connectivity matrix of length || __init__했다
 also did distance matrix || __init__ 했다 => 이것이 쓰이는 모든 것들 (charpath를 고치는 것 끝냈다)
 
@@ -37,6 +37,12 @@ def calcul_n_comp(input_data):
 def calcul_module_and_modularity_Louvain(input_data, n_node):
 
 def calcul_s_core(input_data, n_node):
+
+def calcul_within_module_degree_zscore(input_data, modular_structures, n_node): => need `modular_structure"
+
+
+def calcul_participation_coefficient(input_data, modular_structures, n_node): => need `modular_structure"
+def calcul_rich_club_coef(input_data, degree):
 """
 
 class compute_bct_UW():
@@ -59,7 +65,7 @@ class compute_bct_UW():
         다 implement한후에, "여러 output형태 가진 것들은 따로 def로 묶은 후, 써주기)
         
         """
-        
+
         
         """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
@@ -119,8 +125,9 @@ class compute_bct_UW():
             "pos_strength" : bct.strengths_und_sign(self.mat)[0],
             "vertex_eccentricity": bct.charpath(self.dist_mat)[2],
             "nodal_btw_vec" : bct.edge_betweenness_wei(self.mat)[1],
-            "s_core_index" : s_core_index,
-            "s_core_size" : s_core_size,
+            "s_core_index_0to1" : s_core_index,
+            "s_core_size_0to1" : s_core_size,
+            "k_core_index" : bct.kcoreness_centrality_bu(np.sign(self.mat))[0],
             "within_module_deg_z_score" : bct.module_degree_zscore(self.mat, self.modular_structures),
             "participation_coef" : bct.participation_coef(self.mat, self.modular_structures),
             "rich_club_coef" : bct.rich_club_wu(self.mat), #klevel은 default로 되도록 함(maximujm degree로 자동 setting)
