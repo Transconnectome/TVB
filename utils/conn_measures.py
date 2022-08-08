@@ -45,7 +45,7 @@ class compute_bct_UW():
         while modular_structures.max() != 5:
             modular_structures, modularities = bct.community_louvain(self.mat)
             count+=1
-            if count > 10000: #MUST BE CHANGED
+            if count > 1000: #MUST BE CHANGED
                 if (np.max(modular_structures) == 6) or (np.max(modular_structures)==4):
                     break
                     
