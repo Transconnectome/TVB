@@ -28,13 +28,10 @@ class compute_bct_UW():
             
         self.n_node = (self.mat).shape[0] #used later
         
-        """
-        다 implement한후에, "여러 output형태 가진 것들은 따로 def로 묶은 후, 써주기)
+        ######CHECK USABILITY, IF FAIL, RAISE EXCEPTION######
+        if self.usability_check_density_based() == None:
+            raise Exception("usability test FAILED")
         
-        """
-
-        
-        """   밑에 : BCT돌릴떄 input으로 들어가는 것들이다 (정우쌤 꺼를 보니 그런 듯)  """
         self.conn_len_mat = bct.weight_conversion(self.mat, 'lengths')
         self.dist_mat, self.NOE_in_SP = bct.distance_wei(self.conn_len_mat)
         #have to do "calcul_module_and_modularity_louvain" (modular structure is used on some other measures)
@@ -51,15 +48,9 @@ class compute_bct_UW():
                     
         self.modular_structures = modular_structures
         self.modularities = modularities
-        
-        ####score
-        
-        ####kscore
-        
-    """
-    #changed : charpath input으로 dist_mat이 들어갔다 (not mat itself) => 이런 애러들 더 있는지 확인해봐야 할듯
-    """
-    
+        """
+        다 implement한후에, "여러 output형태 가진 것들은 따로 def로 묶은 후, 써주기)
+        """    
     """
     __init__에서 modular에서 5로 한 이유와, 조금더 correct한 approach가 뭔지 : Modular slowing of resting-state dynamic functional connectivity as a marker of cognitive dysfunction induced by sleep deprivation => 이 논문에서, bct.community_louvain쓸때 어떤 것을 써야하는지 나오게 함 (stochastic한 algorithm이니, 2000번 돌려서 community 갯수가 5개가 되게 되는 robust한 gamma값을 써야한다고 논문에서 나옴.. 일단은 그냥 1로 쓰되, fitting을 해야할 수도 있을듯) 
     """
@@ -139,7 +130,7 @@ class compute_bct_UW():
                 return None
                 #raise error 하지 않은 이유 : 여러번 돌릴 꺼라서 error뜨면 안됨 
             else :
-                print("subject passed the test!")
+                #print("subject passed the test!")
                 return True 
     
     def s_core_computation(self):
