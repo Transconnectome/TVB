@@ -73,10 +73,16 @@ if threshold_scheme == 'weight':
     subjectkeys = count_data.index[not_fragmented_condition]
     count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
 
-elif threshold_scheme == 'density':
+    
+```
+밑의 것 `thresholdscheme == density`는 할필요 없다!~! 한방으로 끝냈다 왜 이렇게 하는지 잘 이해가 안됨(여쭤보기?)
+```
+elif threshold_scheme == 'density':  #outlier 제거하는 과정(?)
 
     # exclude the subjects having density less than threshold before analysis
     # to make all analyized subjects  have the same density.
+    
+    #density-based outlier removal
     density = calcul_density(count_mat_data)
     inclusion_criteria = (density >= threshold)
     print(f'the number of excluded subjects is {len(count_data) - sum(inclusion_criteria)}')
@@ -85,9 +91,10 @@ elif threshold_scheme == 'density':
     subjectkeys = count_data.index[inclusion_criteria]
 
     thresholded_count_mat_data = density_based_threshold(count_mat_data, threshold)
-
+    
+    #fragmentaitno (all connected?)여부로 outlier removal
     # check n_components & select not fragmented subjects
-    n_comp = calcul_n_comp(thresholded_count_mat_data)
+    n_comp = calcul_n_comp(thresholded_count_mat_data) #81 in our case
     not_fragmented_condition = (n_comp == 1)
     subjectkeys = subjectkeys[not_fragmented_condition]
     count_mat_data = thresholded_count_mat_data[not_fragmented_condition]
@@ -114,7 +121,9 @@ NOE_in_SP_pd = pd.DataFrame(NOE_in_SP_line_form, columns=NOE_in_SP_name_list, in
 ###################################
 ###### Brain Network Measures #####
 ###################################
-
+"""
+count_mat_data는 그냥 self.mat 이다
+"""
 # degree
 degree = calcul_degree(count_mat_data, n_node)
 degree_name_list = make_nodal_column_list(region_list, 'deg')
@@ -135,12 +144,15 @@ clustering_coef_list = make_nodal_column_list(region_list, 'clust_coef')
 clustering_coef_pd = pd.DataFrame(clustering_coefs, columns=clustering_coef_list, index=subjectkeys)
 clustering_coef_pd['avg_clustering_coef'] = clustering_coef_pd.mean(axis=1)
 
+
+
 # modular structure & modularity
 modular_structures, modularities = calcul_module_and_modularity_Louvain(count_mat_data, n_node)
 module_name_list = make_nodal_column_list(region_list, 'module_index_of')
 modular_structure_pd = pd.DataFrame(modular_structures, columns=module_name_list, index=subjectkeys)
 module_num_pd = pd.DataFrame(modular_structure_pd.max(axis=1), columns=['module_num'], index=subjectkeys)
 modularity_pd = pd.DataFrame(modularities, columns=['optimal modularity'], index=subjectkeys)
+
 
 
 ####### Measures of Centrality #################
@@ -153,34 +165,53 @@ score_name_list = make_nodal_column_list(region_list, 'score')
 s_core_index_pd = pd.DataFrame(s_core_index, index=subjectkeys, columns=score_name_list)
 s_core_size_pd = pd.DataFrame(s_core_size, index=subjectkeys,
                               columns=[f'score_size_s={round(i, 2)}' for i in np.arange(0, 1, 0.01)])
-
+"""
+NOT IMPLEMENTED (k-score은 이상해서 아직은 안함...)(see the github issue I posted on bctpy
+"""
 # measure of core structure, core-centrality
 # k-coreness (k-core-index, k-core size)
 kcore_index = calcul_k_core(count_mat_data, n_node)
 kcore_index_name_list = make_nodal_column_list(region_list, 'kcore_index_of')
 kcore_index_pd = pd.DataFrame(kcore_index, columns=kcore_index_name_list, index=subjectkeys)
 
+
+
+"""
+NOT IMPLEMENTED => 이거는 정우쌤이 직접 code로 implement한 것 같아서, 나도 그런식으로 해야할듯 
+"""
 # closeness centrality : Cc = nodal efficiency
 # (Ref. Rubinov & Sporns 2010, Complex network measures of brain connectivity:Uses and interpretations)
 closeness_centrality = calcul_closeness_centrality(distance_mat, n_node)
 closeness_centrality_list = make_nodal_column_list(region_list, 'Cc')
 closeness_centrality_pd = pd.DataFrame(closeness_centrality, columns=closeness_centrality_list, index=subjectkeys)
-
+"""
+IMPLEMENTED
+"""
 # betweenness centrality : BC
 betweenness_centrality = calcul_betweenness_centrality(connection_length_mat, n_node)
 betweenness_centrality_list = make_nodal_column_list(region_list, 'BC')
 betweenness_centrality_pd = pd.DataFrame(betweenness_centrality, columns=betweenness_centrality_list, index=subjectkeys)
 
+"""
+IMPLEMENTED
+"""
 # within module degree z-score
 within_module_degree_zscore = calcul_within_module_degree_zscore(count_mat_data, modular_structures, n_node)
 within_module_degree_list = make_nodal_column_list(region_list, 'within_module_deg')
 within_module_degree_pd = pd.DataFrame(within_module_degree_zscore, columns=within_module_degree_list, index=subjectkeys)
 
+"""
+IMPLEMENTED
+"""
 # participation coeffcient
 participation_coefficient = calcul_participation_coefficient(count_mat_data, modular_structures, n_node)
 participation_coef_list = make_nodal_column_list(region_list, 'participation_coef')
 participation_coefficient_pd = pd.DataFrame(participation_coefficient, columns=participation_coef_list, index=subjectkeys)
 
+
+"""
+IMPLEMENTED (근데 NAN 이런게 나옴)
+"""
 # rich club coefficient
 rich_club_coef, rich_club_coef_name_list = calcul_rich_club_coef(count_mat_data, degree)
 rich_club_coef_pd = pd.DataFrame(rich_club_coef, columns=rich_club_coef_name_list, index=subjectkeys).fillna(0)
