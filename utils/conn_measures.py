@@ -45,7 +45,9 @@ class compute_bct_UW():
             if count > 1000: #MUST BE CHANGED
                 if (np.max(modular_structures) == 6) or (np.max(modular_structures)==4):
                     break
-                    
+            #if count >10000: ##if it loops for too long (4,5에도 만족안됨), just exit
+            #    raise Exception("too many iterations, will kill")
+            #        
         self.modular_structures = modular_structures
         self.modularities = modularities
         """
