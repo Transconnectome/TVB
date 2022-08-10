@@ -7,7 +7,7 @@ import numpy as np
 print("IMPORTED")
 
 
-def grouped_corr(data, y, p = 0.95, filter_bonf = True, n = None, covar = None ):
+def grouped_corr(data, y, p = 0.05, filter_bonf = True, n = None, covar = None ):
     """description about this method is long, so it is put after the function definition below"""
     corr_result = pd.DataFrame()
     
