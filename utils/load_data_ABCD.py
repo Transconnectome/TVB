@@ -125,22 +125,24 @@ class metadata():
             follow_up = when - 1 #i.e. 1=> 0 (baseline)이 되고 그런다
             
             #in releases where NIH toolbox was done:
+            
+            mask_set = [] #where we'll store various masks for this release iteration
+            
+            #IQ mask
             if when == 1 or 3:
-                mask_set = [] #where we'll store various masks
-                #IQ
-                #일단은 skip (이것도 append로 하기)
-                #CBCL
-                mask_set.append((self.total_data['eventname']== self.release_names[follow_up]) & (self.total_data['cbcl_totprob']<CBCL)) #i.e. 두 조건을 동시에 만족하는 mask만들기
-                
-                filtered_sub_set = [set(self.total_data[mask]['subjectkey']) for mask in mask_set]
-                
-                for subs in filtered_sub_set:
-                    remain_sub= remain_sub & subs
-                    
-            #elif when == 2 or 4:
-            #    mask_set 
+                print("hihi{}".format(when))
+            #일단은 skip (이것도 append로 하기)
+            #CBCL
+            mask_set.append((self.total_data['eventname']== self.release_names[follow_up]) & (self.total_data['cbcl_totprob']<CBCL)) #i.e. 두 조건을 동시에 만족하는 mask만들기
+            
+            filtered_sub_set = [set(self.total_data[mask]['subjectkey']) for mask in mask_set]
+            
+            for subs in filtered_sub_set:
+                remain_sub= remain_sub & subs
 
         revive_mask = self.total_data['subjectkey'].isin(remain_sub)
+        
+        #data주어졌으면 그것 filtering, 아니면 subjectkey 만 주기
         if data is not None:
             return data[revive_mask]
         else:
