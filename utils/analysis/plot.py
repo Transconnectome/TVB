@@ -24,3 +24,4 @@ def lin_reg_plot(data, meta_data, x, y, corr_result):
     sns.regplot(x=x, y= y , data=combined,scatter_kws={"s":25,"edgecolor":'k','alpha':1},line_kws={"color":'k'},color=palette[10])
     ax.set_title(f'r(%) ={r_corr.round(4)*100}, pv = {p_corr.round(9)}',fontsize=20);
     # ax.set_title(r'$\rho(\%) =-45.3$, $p \leq 0.001$',fontsize=font_size);
+    plt.show()
