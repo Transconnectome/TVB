@@ -74,7 +74,7 @@ class metadata():
 
 
         ###우리가 쓸 measure들의 집합의 columns들을 저장해놓자####
-        self.demography_columns = ['subjectkey','sex','race_g','married','high_educ','high_educ2','income','foreign_born','religion_prefer','gay_parent','gay_youth','race_ethnicity','age','family_adversity','height','weight','abcd_site','family_id','vol','bmi','total_ratio','history_ratio','parent_identity','demo_brthdat_v2','demo_sex_v2','gender_identity','parent_age','foreign_born_family']
+        self.demography_columns = ['subjectkey','eventname','sex','race_g','married','high_educ','high_educ2','income','foreign_born','religion_prefer','gay_parent','gay_youth','race_ethnicity','age','family_adversity','height','weight','abcd_site','family_id','vol','bmi','total_ratio','history_ratio','parent_identity','demo_brthdat_v2','demo_sex_v2','gender_identity','parent_age','foreign_born_family']
         self.nihbx_columns = self.total_data.columns[2:12] 
         self.cbcl_columns = self.total_data.columns[329:349]
         #self.demo_columns =  정의하기!
@@ -91,15 +91,21 @@ class metadata():
     self.columns만 저장해놨기에, cbcl_totprob = self.total_data['cbcl_totprob'].dropna() 이런식으로만 불러오면 된다!
     """
 
-    def load_demo(self):
+    def load_demo(self, release = 2):
         #load demogrpahy
         #baseline year를 쓸 것이다!
-        warnings.warn("We will use the baseline year's demo data, as it has the most... ")
+        warnings.warn("must implmemet so that some info that don't change but is only written in baseline should be extracted too")
         
-        #extract columns
-        demo = self.total_data[self.demography_columns]
-        #extract rows (only baseline)
-        demo = demo.loc[self.baseline_idx]
+        #new : release맞춰서 뽑기
+        mask = (self.total_data['eventname']== self.release_names[release-1])
+        
+        demo = self.total_data[mask][self.demography_columns]
+        
+        #before : baseline그것에 한정해서 생각했다
+        ##extract columns
+        #demo = self.total_data[self.demography_columns]
+        ##extract rows (only baseline)
+        #demo = demo.loc[self.baseline_idx]
         
         return demo
     
