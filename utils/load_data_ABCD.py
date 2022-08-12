@@ -108,7 +108,7 @@ class metadata():
         """
         CBCL < 65, |IQ| < 2td 인 subject들만 보겠다 (KSADS도 옵션으로 넣을 수 있을 듯?)
         #total 값들만 해서 함
-        #주의 : NIHTBX는 release 2,4에만 있다
+        #주의 : NIHTBX는 release 1,3에만 있다
         INPUTS
         * release : 어느 release사용할지
             * 1 : baseline, 2 : 1 year followup, and so on
@@ -129,16 +129,23 @@ class metadata():
             mask_set = [] #where we'll store various masks for this release iteration
             
             #IQ mask
-            if when == 1 or 3:
-                print("hihi{}".format(when))
-            #일단은 skip (이것도 append로 하기)
+            if when == 1 or 3: #i.e. in releases where NIHTBX was measured
+                nihtbx_data = self.total_data[self.total_data['eventname'] == "baseline_year_1_arm_1"]['nihtbx_totalcomp_uncorrected'].dropna()
+                mu = nihtbx_data.mean()
+                std = nihtbx_data.mean()
+                mask_nihtbx = (self.total_data['eventname'] == "baseline_year_1_arm_1") & (abs(self.total_data['nihtbx_totalcomp_uncorrected']-mu) < NIHTBX*std ) 
+                
+                mask_set.append(mask_nihtbx)
+
             #CBCL
-            mask_set.append((self.total_data['eventname']== self.release_names[follow_up]) & (self.total_data['cbcl_totprob']<CBCL)) #i.e. 두 조건을 동시에 만족하는 mask만들기
+            mask_cbcl = (self.total_data['eventname']== self.release_names[follow_up]) & (self.total_data['cbcl_totprob']<CBCL) #i.e. 두 조건을 동시에 만족하는 mask만들기
+            
+            mask_set.append(mask_cbcl)
             
             filtered_sub_set = [set(self.total_data[mask]['subjectkey']) for mask in mask_set]
             
             for subs in filtered_sub_set:
-                remain_sub= remain_sub & subs
+                remain_sub= remain_sub & subs #iteratively filter out things
 
         revive_mask = self.total_data['subjectkey'].isin(remain_sub)
         
