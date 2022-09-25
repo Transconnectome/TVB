@@ -1,4 +1,0 @@
-  File "SC_ses_2_run_scalar.py", line 58
-    continue #if usability check is not satisfied, skip this iteration
-                                                                     ^
-TabError: inconsistent use of tabs and spaces in indentation
